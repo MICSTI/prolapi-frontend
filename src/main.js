@@ -5,8 +5,12 @@ import VueRx from "vue-rx";
 import Buefy from "buefy";
 import "buefy/dist/buefy.css";
 
+import axios from "axios";
+import VueAxios from "vue-axios";
+
 Vue.use(VueRx);
 Vue.use(Buefy);
+Vue.use(VueAxios, axios);
 
 Vue.config.productionTip = false;
 
