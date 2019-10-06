@@ -3,11 +3,14 @@
     <header class="is-size-3 has-text-centered">🚀 Vue.js and RxJS are awesome! 🚀</header>
 
     <section class="section">
-      <button :disabled="disabled$" class="button" v-stream:click="click$">{{loadText$}}</button>
-      <div class="title">{{name$}}</div>
-      <div>
-        <img :src="logo$" alt>
-      </div>
+      <b-tabs v-model="activeTab">
+        <b-tab-item v-for="lang of languages" :key="lang.id" :label="lang.name">
+          <div class="title">{{name$}}</div>
+          <div>
+            <img :src="logo$" alt>
+          </div>
+        </b-tab-item>
+      </b-tabs>
     </section>
   </section>
 </template>
@@ -18,19 +21,35 @@ import {
   map,
   pluck,
   exhaustMap,
-  switchMap,
   mapTo,
   share,
   startWith
 } from "rxjs/operators";
 
 export default {
+  data() {
+    return {
+      activeTab: 0,
+      languages: [
+        { id: 1, name: "JavaScript" },
+        { id: 2, name: "Java" },
+        { id: 5, name: "Go" },
+        { id: 6, name: "Python" },
+        { id: 11, name: "Kotlin" }
+      ]
+    };
+  },
   domStreams: ["click$"],
   subscriptions() {
+    const activeTab$ = this.$watchAsObservable("activeTab", {
+      immediate: true
+    }).pipe(pluck("newValue"));
+
     const loadUrl = url => from(this.$http.get(url)).pipe(pluck("data"));
 
-    const js$ = this.click$.pipe(
-      mapTo("http://localhost:3333/api/languages/1"),
+    const js$ = activeTab$.pipe(
+      map(tabId => this.languages[tabId].id),
+      map(id => `http://localhost:3333/api/languages/${id}`),
       exhaustMap(loadUrl),
       share()
     );
