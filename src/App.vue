@@ -23,7 +23,8 @@ import {
   exhaustMap,
   mapTo,
   share,
-  startWith
+  startWith,
+  switchMap
 } from "rxjs/operators";
 
 export default {
@@ -41,6 +42,11 @@ export default {
   },
   domStreams: ["click$"],
   subscriptions() {
+    const cache = {};
+    const cacheRequest = cache => url => {
+      return cache[url] ? cache[url] : (cache[url] = loadUrl(url));
+    };
+
     const activeTab$ = this.$watchAsObservable("activeTab", {
       immediate: true
     }).pipe(pluck("newValue"));
@@ -50,7 +56,7 @@ export default {
     const js$ = activeTab$.pipe(
       map(tabId => this.languages[tabId].id),
       map(id => `http://localhost:3333/api/languages/${id}`),
-      exhaustMap(loadUrl),
+      switchMap(cacheRequest(cache)),
       share()
     );
 
