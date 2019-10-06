@@ -6,7 +6,7 @@
       <b-tabs v-model="activeTab">
         <b-tab-item v-for="lang of languages" :key="lang.id" :label="lang.name">
           <div class="title">{{name$}}</div>
-          <div>
+          <div class="logo-container">
             <img :src="logo$" alt>
           </div>
         </b-tab-item>
@@ -80,4 +80,7 @@ export default {
 </script>
 
 <style>
+.logo-container {
+  max-width: 40%;
+}
 </style>
