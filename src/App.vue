@@ -110,6 +110,12 @@ export default {
 </script>
 
 <style>
+img {
+  object-fit: cover;
+  height: 40%;
+  width: 50%;
+}
+
 .logo-container {
   max-width: 40%;
   padding: 1rem 0;
